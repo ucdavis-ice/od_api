@@ -32,7 +32,7 @@ def loadTable(conn, infile):
 #         minutes = row[5]
 #         dist = row[6]
         insrow = (row[1][0:12],row[1][15:27],row[5],row[6])
-        sql = "INSERT INTO epa_od (origin,dest,time,distance) VALUES(%s,%s,%s,%s);"
+        sql = "INSERT INTO od_api_odpairs (origin,dest,ttime,tdistance) VALUES(%s,%s,%s,%s);"
         cur.execute(sql,insrow)
 #         print(".")
     conn.commit()
@@ -40,7 +40,7 @@ def loadTable(conn, infile):
         
         
 
-connstr = "host='localhost' dbname='postgis' user='postgis' password='G0G1s!'"
+connstr = "host='localhost' dbname='django_postgis' user='django_user' password='g0'"
 infile = "/home/roth/Workspace2/epa_od/ODmat_CA3_LAX6.txt"
 
 try:
