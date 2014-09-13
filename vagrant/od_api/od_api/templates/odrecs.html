@@ -1,0 +1,30 @@
+{% block content %}
+    <h2>Block Groups</h2>
+Origin Block Group: {{ obg }} </br>
+Mode: {{ mode.name }} </br>
+MaxTime: {{ maxtime }} </br>
+MaxDistance: {{ maxdist }} </br>
+Number of OD Pairs: {{ numrecs}} </br>
+    <div class = "effort">
+        <table border = "0" cellspacing = "10">
+            <tr>
+                <th>Destination</th>
+                <th>Time (min.)</th>
+                <th>Distance (meters)</th>
+
+            </tr>
+            {% for odrec in odrecs %}
+            <tr>
+                <td>{{ odrec.destination }}</td>
+                <td>{{ odrec.ttime }}</td>
+                <td>{{ odrec.tdist }}</td>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+    
+{% endblock %}
+
+
+
+

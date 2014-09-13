@@ -17,31 +17,42 @@ def makeTable(conn):
     conn.commit()
     
     
-def loadTable(conn, infile):
+def loadODTable(conn, infile):
     # Open cursor
     cur = conn.cursor()
     # Open File
     ofile = open(infile, 'r')
     ocsv = csv.reader(ofile)
     ocsv.next()
+    i = 0
     for row in ocsv:
+        i+=1
 #         origin = row[1][0:12] 
 #         print(origin)
 #         dest = row[1][15:27]
 #         print(dest)
 #         minutes = row[5]
 #         dist = row[6]
-        insrow = (row[1][0:12],row[1][15:27],row[5],row[6])
-        sql = "INSERT INTO od_api_odpairs (origin,dest,ttime,tdistance) VALUES(%s,%s,%s,%s);"
+        insrow = (row[1][0:12],row[1][15:27],1,row[5],row[6])
+        sql = "INSERT INTO od_api_odpairs (origin,destination,mode_id,ttime,tdist) VALUES(%s,%s,%s,%s,%s);"
         cur.execute(sql,insrow)
 #         print(".")
+        if i==5000:
+            i=0
+            conn.commit()
+            print("Committing")
     conn.commit()
         
-        
+def loadModeTable(conn):
+    # Open cursor
+    cur = conn.cursor()
+    sql = "INSERT INTO od_api_modes (name) VALUES ('Automobile');"
+    cur.execute(sql)
+    conn.commit()  
         
 
 connstr = "host='localhost' dbname='django_postgis' user='django_user' password='g0'"
-infile = "/home/roth/Workspace2/epa_od/ODmat_CA3_LAX6.txt"
+infile = "/vagrant/ODmat_CA3_LAX6.txt"
 
 try:
     conn = psycopg2.connect(connstr)
@@ -50,19 +61,20 @@ except:
     print("Failed to open connections")
     exit()
 
-    
 try:
-    makeTable(conn)
-    print("Made Tables")
-except:
-    print("Table construction failed")
-    exit()
+    loadModeTable(conn)
+    print("Added mode")
+except Exception, e:
+    print("Failed to load mode")
+    print(str(e))
+
 
 try:
-    loadTable(conn,infile)
-    print("Loaded Tables")
-except:
-    print("Table load failed")
+    loadODTable(conn,infile)
+    print("Loaded ODTables")
+except Exception, e:
+    print("Table load OD failed")
+    print(str(e))
     exit()
 
 print("Done")    
